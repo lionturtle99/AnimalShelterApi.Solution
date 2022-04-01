@@ -9,6 +9,9 @@ namespace AnimalShelterAPI.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
+  [ApiVersion("1.0")]
+  [ApiVersion("1.1", Deprecated = true)]
+  [ApiVersion("2.0")]
   public class AnimalsController : ControllerBase
   {
     private readonly AnimalShelterAPIContext _db;

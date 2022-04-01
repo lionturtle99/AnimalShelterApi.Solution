@@ -4,8 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.OpenApi.Models;
 using AnimalShelterAPI.Models;
 
 namespace AnimalShelterAPI
@@ -36,6 +37,12 @@ namespace AnimalShelterAPI
                 opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
 
             services.AddControllers();
+
+            services.AddApiVersioning(o => {
+                    o.ReportApiVersions = true;
+                    o.AssumeDefaultVersionWhenUnspecified = true;
+                    o.DefaultApiVersion = new ApiVersion(1, 0); 
+            });
 
             services.AddSwaggerGen(c =>
             {
