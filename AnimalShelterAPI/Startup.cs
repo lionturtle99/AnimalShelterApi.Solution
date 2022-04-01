@@ -22,8 +22,19 @@ namespace AnimalShelterAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://*.example.com")
+                                            .AllowAnyHeader();
+                    });
+            });
+
             services.AddDbContext<AnimalShelterAPIContext>(opt =>
                 opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -32,18 +43,16 @@ namespace AnimalShelterAPI
                 {
                     Version = "v1",
                     Title = "Animal Shelter Api",
-                    Description = "A simple MVC ASP.NET Core Web API",
-                    TermsOfService = new Uri("http://localhost:5000/"),
+                    Description = "A REST ASP.NET Core API",
                     Contact = new OpenApiContact
                     {
                         Name = "Liam Eller",
                         Email = "mailto:liamthelastson@gmail.com",
-                        Url = new Uri("http://localhost:5000/"),
                     },
                     License = new OpenApiLicense
                     {
-                        Name = "Use under LICX",
-                        Url = new Uri("http://localhost:5000/"),
+                        Name = "MIT License",
+                        Url = new Uri("https://opensource.org/licenses/MIT"),
                     }
                 });
             });
@@ -62,7 +71,10 @@ namespace AnimalShelterAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Animal Shelter Api V1");
                 c.RoutePrefix = string.Empty;
             });
+            
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
