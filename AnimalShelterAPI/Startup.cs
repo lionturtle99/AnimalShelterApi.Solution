@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System;
 using AnimalShelterAPI.Models;
 
 namespace AnimalShelterAPI
@@ -23,6 +25,28 @@ namespace AnimalShelterAPI
             services.AddDbContext<AnimalShelterAPIContext>(opt =>
                 opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Animal Shelter Api",
+                    Description = "A simple MVC ASP.NET Core Web API",
+                    TermsOfService = new Uri("http://localhost:5000/"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Liam Eller",
+                        Email = "mailto:liamthelastson@gmail.com",
+                        Url = new Uri("http://localhost:5000/"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                        Url = new Uri("http://localhost:5000/"),
+                    }
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -31,7 +55,13 @@ namespace AnimalShelterAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Animal Shelter Api V1");
+                c.RoutePrefix = string.Empty;
+            });
             app.UseRouting();
 
             app.UseAuthorization();
