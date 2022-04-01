@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using System;
 using Microsoft.OpenApi.Models;
 using AnimalShelterAPI.Models;
@@ -38,10 +39,12 @@ namespace AnimalShelterAPI
 
             services.AddControllers();
 
-            services.AddApiVersioning(o => {
-                    o.ReportApiVersions = true;
-                    o.AssumeDefaultVersionWhenUnspecified = true;
-                    o.DefaultApiVersion = new ApiVersion(1, 0); 
+            services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.AssumeDefaultVersionWhenUnspecified = true;
+                config.ReportApiVersions = true;
+                config.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
 
             services.AddSwaggerGen(c =>

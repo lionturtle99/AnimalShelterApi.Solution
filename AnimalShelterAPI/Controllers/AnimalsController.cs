@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AnimalShelterAPI.Models;
+using System;
 
 namespace AnimalShelterAPI.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("v{version:apiVersion}/api/[controller]")]
   [ApiController]
   [ApiVersion("1.0")]
-  [ApiVersion("1.1", Deprecated = true)]
   [ApiVersion("2.0")]
   public class AnimalsController : ControllerBase
   {
@@ -110,6 +110,17 @@ namespace AnimalShelterAPI.Controllers
       await _db.SaveChangesAsync();
 
       return NoContent();
+    }
+
+    [MapToApiVersion("2.0")]
+    [HttpGet("GetRandom")]
+    public async Task<ActionResult<Animal>> GetRandom()
+    {
+        var animalList = await _db.Animals.ToListAsync();
+        int r = new Random().Next(animalList.Count);
+        var animal = animalList[r];
+
+        return animal;
     }
 
     private bool AnimalExists(int id)
